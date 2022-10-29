@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 const UploadPost = ({ currentId, setCurrentId, user}) => {
     const dispatch = useDispatch();
     const navigateTo = useNavigate();
-    
+        
     const post = useSelector((state) => currentId ? state.posts.posts.find((p) => p._id === currentId) : null);        
     
     const[tags, setTags] = useState([]);
@@ -65,7 +65,7 @@ const UploadPost = ({ currentId, setCurrentId, user}) => {
                     </div>
                 </div>
                 <div className="space-y-1">
-                    <textarea className="w-full focus:ring-1 focus:outline-none focus:ring-red-400 rounded border border-gray-300 p-2  text-gray-800" maxLength={100} name="message" type="text" value={postData.message} onChange={(e) => setPostData({ ...postData, message: e.target.value})} placeholder="Write something about a post here..." required/>
+                    <textarea className="w-full focus:ring-1 focus:outline-none focus:ring-red-400 rounded border border-gray-300 p-2  text-gray-800" maxLength={100} name="message" type="text" value={postData.message} onChange={(e) => setPostData({ ...postData, message: e.target.value})} placeholder="Write something about a post here..." />
                 </div>
                 {/* <div className="space-y-1">
                     <input className="w-full focus:ring-1 focus:outline-none focus:ring-red-400 rounded border border-gray-300 p-2 text-gray-800" name="tags" type="text" value={postData.tags} onChange={handleTags} placeholder="Tags e.g. travel, foodie, cricket" />

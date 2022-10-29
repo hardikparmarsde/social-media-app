@@ -38,7 +38,7 @@ const Header = ({user, setUser}) => {
       }, [navigateTo]);
     
     return(
-        <nav className="w-full border-gray-300 rounded mb-2 md:border-b md:pr-5 md:pl-5">
+        <nav className="w-full border-gray-300 rounded mb-2 md:border-b md:pr-5 md:pl-5 xs:pl-2 xs:pr-2 mt-2">
             <div className="flex justify-between flex-wrap items-center">
                 <div className="flex-none">
                     <Link to='/feed'>
@@ -71,9 +71,9 @@ const Header = ({user, setUser}) => {
                                 {
                                     location.pathname === '/feed' 
                                     ? 
-                                    <a className="block py-2 text-red-600 bg-gray-50">Feed</a>
+                                    <a className="block py-2 text-red-600">Feed</a>
                                     :
-                                    <a className="block py-2 text-gray-700 bg-gray-50">Feed</a>
+                                    <a className="block py-2 text-gray-700">Feed</a>
                                 }
                             </li>
                         </Link>
