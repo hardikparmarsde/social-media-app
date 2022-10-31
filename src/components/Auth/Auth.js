@@ -32,50 +32,38 @@ const Auth = () => {
     const[isSignUp, setIsSignUp] = useState(false);
     const[message, setMessage] = useState();
     const[showMessage, setShowMessage] = useState(false)
-    const[isPasswordValid, setIspasswordValid] = useState(false);
-
-    useEffect(() => {
-        if(formData.confirmPassword && formData.password !== formData.confirmPassword) {
-            setPasswordWarning(true);
-        }
-        else {
-            setPasswordWarning(false);
-        }
-    }, [formData.password, formData.confirmPassword])
-    
-    useEffect(() => {
-        if(formData.password.length == 6) {
-            setIspasswordValid(true);
-        }else {
-            setIspasswordValid(false);
-        } 
-    }, [formData.password])
-    
+    const[isPasswordValid, setIspasswordValid] = useState(true);
+        
     const handleOnSubmit = (e) => {
         e.preventDefault();
-        
         if(!isSignUp && (!formData.email || !formData.password)) {
             setEmptyErrors({ ...emptyErrors, email: !formData.email, password: !formData.password});
             return;
         }
-        else if(isSignUp && (!formData.email || !formData.password || !formData.confirmPassword || !formData.firstName || !formData.lastName)) {
+
+        if(isSignUp && (!formData.email || !formData.password || !formData.confirmPassword || !formData.firstName || !formData.lastName)){
             setEmptyErrors({ ...emptyErrors, email: !formData.email, password: !formData.password, confirmPassword: !formData.confirmPassword, firstName: !formData.firstName, lastName: !formData.lastName});
             return;
         }
 
-        if(isSignUp && isPasswordValid) 
+        if(formData.password.length < 6) {
+            setIspasswordValid(false);
+            return;
+        } 
+
+        if(isSignUp && (formData.password !== formData.confirmPassword)) {
+            setPasswordWarning(true);
+            return;
+        }
+        if(isSignUp) 
             return dispatch(signUp(formData, navigateTo));
-        else 
+        else
             return dispatch(signIn(formData, navigateTo));        
     }
 
     const switchMode = (e)  => {
         e.preventDefault();
         setIsSignUp(!isSignUp);
-    }
-
-    const handleShowPassword = () => {
-       setShowPassword(!showPassword); 
     }
 
     const handleEmail = (e) => {
@@ -102,14 +90,19 @@ const Auth = () => {
     const handlePassword = (e) => {
         if(e.target.value) 
             setEmptyErrors({ ...emptyErrors, password:false});
-            
+        if(e.target.value.length >= 6) 
+            setIspasswordValid(true);
+                
         setFormData({...formData, password: e.target.value});
     }
 
     const handleConfirmPassword = (e) => {
         if(e.target.value) 
-            setEmptyErrors({ ...emptyErrors, confirmPassword:false});            
-        
+            setEmptyErrors({ ...emptyErrors, confirmPassword:false});
+
+        if(e.target.value === formData.password) 
+            setPasswordWarning(false);
+
         setFormData({...formData, confirmPassword: e.target.value});        
     }
 
@@ -140,7 +133,7 @@ const Auth = () => {
                         isSignUp && passwordWarning && 
                         <div class="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg" role="alert">
                             <span class="font-medium">Passwords does not match!</span>
-                      </div>
+                       </div>
                     }
                     <div className="">
                         <input className="w-full rounded border border-gray-300 p-2 text-gray-800" name ="creator" type="email" placeholder="Email Address" value={formData.email} onChange={handleEmail} />
@@ -170,7 +163,7 @@ const Auth = () => {
                 <div>
                     <div className="relative w-full flex items-center">
                         <input className="w-full rounded border border-gray-300 p-2" name="password" type={showPassword ? 'text': 'password'}   placeholder="Password" value={formData.password} onChange={handlePassword} min={6} max={12} />
-                        <label htmlFor="password" className="cursor-pointer absolute right-2" onClick={handleShowPassword}>
+                        <label htmlFor="password" className="cursor-pointer absolute right-2" onClick={() => setShowPassword(!showPassword)}>
                             { 
                                 showPassword ?
                                 <svg className="fill-gray-500" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">

@@ -32,7 +32,7 @@ const App = () => {
         <Routes>
             <Route path='/auth' exact element={ !user ? <Auth /> : <Navigate to='/feed'/>} />
             <Route path='/' exact element={<Navigate to='/auth'/>}/>
-            <Route path='/feed' exact element={user ? <PaginatedItems setCurrentId={setCurrentId} items={posts} /> : <Navigate to='/auth'/>} />
+            <Route path='/feed' exact element={user ? <PaginatedItems setCurrentId={setCurrentId} items={posts}/> : <Navigate to='/auth'/>} />
             <Route path='/post' exact element={user ? <UploadPost currentId={currentId} setCurrentId={setCurrentId} user={user} /> : <Navigate to="/auth"/>}/>              
         </Routes>
         <Footer/>

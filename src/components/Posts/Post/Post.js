@@ -6,8 +6,7 @@ import { deletePost, likePost } from "../../../actions/actions";
 
 const Post = ({post, setCurrentId}) => {
 
-    const user = JSON.parse(localStorage.getItem('profile'));
-
+    const user = JSON.parse(localStorage.getItem('profile'));    
     const[drawer, setDrawer] = useState(false);
     const navigateTo = useNavigate();
     const dispatch = useDispatch();
@@ -77,12 +76,11 @@ const Post = ({post, setCurrentId}) => {
                     })
                   }
                 </div>
-
             <div className="flex px-2 py-2 justify-between">
                 <div className="flex items-center space-x-2">
                   <button className="cursor-pointer" onClick={ handleLikes}>
                   {
-                    post.likes.length > 0 ?       
+                    post.likes.findIndex((id) => id === String(user.result._id)) !== -1  ?       
                       <svg className="fill-red-600 " xmlns="http://www.w3.org/2000/svg"  fill="currentColor" width="20" height="20"  viewBox="0 0 16 16">
                         <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
                       </svg>                    
