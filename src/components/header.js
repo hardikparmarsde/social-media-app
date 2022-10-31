@@ -82,9 +82,9 @@ const Header = ({user, setUser}) => {
                                 {
                                     location.pathname === '/post' 
                                     ? 
-                                    <a className="block py-2 text-red-600 bg-gray-50">Post</a>
+                                    <a className="block py-2 text-red-600">Post</a>
                                     :
-                                    <a className="block py-2 text-gray-700 bg-gray-50">Post</a>
+                                    <a className="block py-2 text-gray-700">Post</a>
                                 }
                             </li>
                         </Link>
@@ -106,9 +106,9 @@ const Header = ({user, setUser}) => {
                             {
                                 location.pathname === '/feed' 
                                 ? 
-                                <a className="block py-2 text-red-600 bg-gray-50">Feed</a>
+                                <a className="block py-2 text-red-600">Feed</a>
                                 :
-                                <a className="block py-2 text-gray-700 bg-gray-50">Feed</a>
+                                <a className="block py-2 text-gray-700">Feed</a>
                             }
                         </li>
                     </Link>
@@ -117,9 +117,9 @@ const Header = ({user, setUser}) => {
                             {
                                 location.pathname === '/post' 
                                 ? 
-                                <a className="block py-2 text-red-600 bg-gray-50">Post</a>
+                                <a className="block py-2 text-red-600">Post</a>
                                 :
-                                <a className="block py-2 text-gray-700 bg-gray-50">Post</a>
+                                <a className="block py-2 text-gray-700">Post</a>
                             }
                         </li>
                     </Link>
