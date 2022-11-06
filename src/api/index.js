@@ -1,6 +1,6 @@
 import axios from 'axios'; 
 
-const API = axios.create({ baseURL: 'https://social-media-json-api.herokuapp.com'});
+const API = axios.create({ baseURL: '/api'});
 
 API.interceptors.request.use((req => {
 
