@@ -136,7 +136,7 @@ const Auth = () => {
                        </div>
                     }
                     <div className="">
-                        <input className="w-full rounded border border-gray-300 p-2 text-gray-800" name ="creator" type="email" placeholder="Email Address" value={formData.email} onChange={handleEmail} />
+                        <input className="w-full rounded border border-gray-300 p-2 text-gray-800 focus:ring-1 focus:ring-red-600 outline-none " name ="creator" type="email" placeholder="Email Address" value={formData.email} onChange={handleEmail} />
                         {
                             emptyErrors.email && <span className="text-red-500">{helperText}</span>
                         }
@@ -145,14 +145,14 @@ const Auth = () => {
                         isSignUp && 
                         <div className="w-full grid grid-cols-2 space-x-2 "> 
                             <div className="">
-                                <input className="w-full rounded border border-gray-300 p-2" name="first-name" type="text"   placeholder="First Name" value={formData.firstName} onChange={handleFirstName} />
+                                <input className="w-full rounded border border-gray-300 p-2 focus:ring-1 focus:ring-red-600 outline-none" name="first-name" type="text"   placeholder="First Name" value={formData.firstName} onChange={handleFirstName} />
                                 {
                                     emptyErrors.firstName && <span className="text-red-500">{helperText}</span>
                                 }
                             </div>
 
                             <div className="">
-                                <input className="w-full rounded border border-gray-300 p-2" name="last-name" type="text"   placeholder="Last Name" value={formData.lastName} onChange={handleLastName} />
+                                <input className="w-full rounded border border-gray-300 p-2 focus:ring-1 focus:ring-red-600 outline-none" name="last-name" type="text"   placeholder="Last Name" value={formData.lastName} onChange={handleLastName} />
                                 {
                                     emptyErrors.lastName && <span className="text-red-500">{helperText}</span>
                                 }
@@ -162,7 +162,7 @@ const Auth = () => {
 
                 <div>
                     <div className="relative w-full flex items-center">
-                        <input className="w-full rounded border border-gray-300 p-2" name="password" type={showPassword ? 'text': 'password'}   placeholder="Password" value={formData.password} onChange={handlePassword} min={6} max={12} />
+                        <input className="w-full rounded border border-gray-300 p-2 focus:ring-1 focus:ring-red-600 outline-none" name="password" type={showPassword ? 'text': 'password'}   placeholder="Password" value={formData.password} onChange={handlePassword} min={6} max={12} />
                         <label htmlFor="password" className="cursor-pointer absolute right-2" onClick={() => setShowPassword(!showPassword)}>
                             { 
                                 showPassword ?
@@ -187,7 +187,7 @@ const Auth = () => {
                     {
                         isSignUp &&
                         <div className="space-y-1">     
-                            <input className="w-full rounded border border-gray-300 p-2" name="confirm-password" type='password'  placeholder="Confirm Password" value={formData.confirmPassword} onChange={handleConfirmPassword}/>
+                            <input className="w-full rounded border border-gray-300 p-2 focus:ring-1 focus:ring-red-600 outline-none" name="confirm-password" type='password'  placeholder="Confirm Password" value={formData.confirmPassword} onChange={handleConfirmPassword}/>
                             {
                                 emptyErrors.confirmPassword && <span className="text-red-500">{helperText}</span>
                             }

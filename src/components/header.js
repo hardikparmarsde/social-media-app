@@ -6,7 +6,7 @@ import { Link, useNavigate} from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useLocation } from "react-router-dom";
 
-const Header = ({user, setUser}) => {  
+const Header = ({user, setUser, setItemOffSet}) => {  
     const navigateTo = useNavigate();  
     const dispatch = useDispatch();
     const location = useLocation();
@@ -16,8 +16,6 @@ const Header = ({user, setUser}) => {
         setMobileMenu(!mobileMenu);
     }
 
-//    console.log(params);
-    
     const handleLogout = () => {
         dispatch(logout());
         setUser(null);
@@ -37,11 +35,14 @@ const Header = ({user, setUser}) => {
         setUser(JSON.parse(localStorage.getItem('profile')));
       }, [navigateTo]);
     
+    const handleFeed = () => {
+        setItemOffSet(0);
+    }
     return(
         <nav className="w-full border-gray-300 rounded mb-2 md:border-b md:pr-5 md:pl-5 xs:pl-2 xs:pr-2 mt-2">
             <div className="flex justify-between flex-wrap items-center">
                 <div className="flex-none">
-                    <Link to='/feed'>
+                    <Link to='/feed' onClick={handleFeed}>
                         <img src={logo} alt="logo" className="md:w-40 xs:w-20"/>
                     </Link>
                 </div>                

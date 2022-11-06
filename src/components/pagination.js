@@ -2,21 +2,16 @@ import React, { useEffect, useMemo, useState } from 'react';
 import ReactPaginate from 'react-paginate';
 import Posts from './Posts/Posts';
 
-const PaginatedItems = ({setCurrentId, items}) => {
+const PaginatedItems = ({setCurrentId, items, itemsPerPage, currentItems, setItemOffset}) => {
 
-  const itemsPerPage = 6;
-  const [itemOffset, setItemOffset] = useState(0);
   useEffect(() => {
     setCurrentId('');
   },[])
+
   const pageCount = useMemo(() => {
     return Math.ceil(items.length / itemsPerPage)
   }, [items.length])
 
-  const currentItems = useMemo(() => {
-     const endOffset = itemOffset + itemsPerPage;
-     return items.slice(itemOffset, endOffset)
-  }, [items, itemOffset, itemsPerPage])
 
   const handlePageClick = (event) => {
     const newOffset = (event.selected * itemsPerPage) % items.length;
