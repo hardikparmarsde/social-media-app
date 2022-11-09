@@ -1,6 +1,6 @@
 import axios from 'axios'; 
 
-const API = axios.create({ baseURL: '/api'});
+const API = axios.create({ baseURL: 'https://social-media-api-ch27.onrender.com'});
 
 API.interceptors.request.use((req => {
 
