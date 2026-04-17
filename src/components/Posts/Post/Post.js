@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState, useCallback } from "react"
 import moment from 'moment';
 import { useDispatch, useSelector } from "react-redux";
 import { addComment, deleteComment, deletePost, likePost } from "../../../actions/actions";
+import { resolveAssetUrl } from "../../../api";
 import { AnimatePresence, motion, useMotionVariants } from "../../ui/motion";
 import AuthRequiredModal from "../../ui/AuthRequiredModal";
 
@@ -284,7 +285,7 @@ const Post = ({ post, setCurrentId }) => {
                             )}
                             <img
                                 className="max-h-[520px] w-full object-cover"
-                                src={post.selectedFile}
+                                src={resolveAssetUrl(post.selectedFile)}
                                 alt="post"
                                 loading="lazy"
                                 onLoad={() => setImageLoaded(true)}
@@ -633,7 +634,7 @@ const Post = ({ post, setCurrentId }) => {
                                 <div className="absolute inset-0 animate-pulse bg-gradient-to-br from-white/10 via-white/5 to-white/10" />
                             )}
                             <img
-                                src={post.selectedFile}
+                                src={resolveAssetUrl(post.selectedFile)}
                                 alt="post"
                                 className="max-h-[85vh] w-full object-contain"
                                 onLoad={() => setModalImageLoaded(true)}

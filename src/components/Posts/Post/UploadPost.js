@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { createPost, updatePost } from "../../../actions/actions";
+import { resolveAssetUrl } from "../../../api";
 import { motion, useMotionVariants } from "../../ui/motion";
 
 const UploadPost = ({ currentId, setCurrentId }) => {
@@ -27,7 +28,7 @@ const UploadPost = ({ currentId, setCurrentId }) => {
 
     const previewSrc = useMemo(() => {
         if (!postData.selectedFile) return '';
-        if (typeof postData.selectedFile === 'string') return postData.selectedFile;
+        if (typeof postData.selectedFile === 'string') return resolveAssetUrl(postData.selectedFile);
         try {
             return URL.createObjectURL(postData.selectedFile);
         } catch {
