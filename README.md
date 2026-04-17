@@ -3,7 +3,7 @@
 LinkSphere is a social media web app where users can **sign up / sign in**, browse a **feed**, and **create posts**. The UI supports **light/dark theme**, client-side routing, and Redux state management with persistence.
 
 - **Backend**: `https://github.com/hardikparmarsde/social-media-api`
-- **Live site**: `https://mystore.social/`
+- **Live site**: `https://social-media-app-ochre-gamma.vercel.app/`
 
 ## What the app does
 
