@@ -23,6 +23,7 @@ const UploadPost = ({ currentId, setCurrentId }) => {
     });
     const [tagsText, setTagsText] = useState('');
     const [isDragging, setIsDragging] = useState(false);
+    const [previewLoaded, setPreviewLoaded] = useState(false);
 
     const previewSrc = useMemo(() => {
         if (!postData.selectedFile) return '';
@@ -33,6 +34,10 @@ const UploadPost = ({ currentId, setCurrentId }) => {
             return '';
         }
     }, [postData.selectedFile]);
+
+    useEffect(() => {
+        setPreviewLoaded(false);
+    }, [previewSrc]);
 
     useEffect(() => {
         if (!postData.selectedFile || typeof postData.selectedFile === 'string') return;
@@ -168,11 +173,20 @@ const UploadPost = ({ currentId, setCurrentId }) => {
                         onDrop={handleDrop}
                     >
                         {previewSrc ? (
-                            <img
-                                src={previewSrc}
-                                alt="preview"
-                                className="h-48 w-full rounded-xl object-cover"
-                            />
+                            <div className="relative">
+                                {!previewLoaded && (
+                                    <div className="absolute inset-0 animate-pulse">
+                                        <div className="h-48 w-full rounded-xl bg-gradient-to-br from-slate-200 via-slate-100 to-slate-200 dark:from-slate-800 dark:via-slate-900 dark:to-slate-800" />
+                                    </div>
+                                )}
+                                <img
+                                    src={previewSrc}
+                                    alt="preview"
+                                    className="h-48 w-full rounded-xl object-cover"
+                                    onLoad={() => setPreviewLoaded(true)}
+                                    onError={() => setPreviewLoaded(true)}
+                                />
+                            </div>
                         ) : (
                             <div className="flex items-center gap-3">
                                 <div className="flex h-10 w-10 flex-none items-center justify-center rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-800/70 dark:text-slate-300">

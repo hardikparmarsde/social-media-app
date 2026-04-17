@@ -1,7 +1,10 @@
 import axios from 'axios'; 
 
-// Prefer env override; otherwise use same-origin + CRA proxy in development.
-const baseURL = process.env.REACT_APP_API_URL || '';
+
+const devURL = process.env.REACT_APP_API_DEV_URL;
+const prodURL = process.env.REACT_APP_API_PROD_URL;
+
+const baseURL = process.env.REACT_APP_ENVIRONMENT === 'DEV' ? devURL : prodURL;
 const API = axios.create({ baseURL });
 
 API.interceptors.request.use((req => {
