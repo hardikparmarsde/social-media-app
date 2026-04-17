@@ -1,73 +1,97 @@
-Backend: https://github.com/hardikparmarsde/social-media-api
-Live Website: https://mystore.social/
+## LinkSphere (Frontend)
 
-# Getting Started with Create React App
+LinkSphere is a social media web app where users can **sign up / sign in**, browse a **feed**, and **create posts**. The UI supports **light/dark theme**, client-side routing, and Redux state management with persistence.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+- **Backend**: `https://github.com/hardikparmarsde/social-media-api`
+- **Live site**: `https://mystore.social/`
 
-## Available Scripts
+## What the app does
 
-In the project directory, you can run:
+- **Authentication**
+  - Sign up and sign in from `/auth/signup` and `/auth/login`
+  - Stores the authenticated user (including token) in Redux
+  - Automatically logs out if the JWT is expired (checked in the header)
+- **Feed**
+  - `/feed` loads posts (paginated)
+  - Displays posts and allows actions like navigating, liking, etc. (depends on backend capabilities)
+- **Create post**
+  - `/post` is protected (requires auth)
+  - If not signed in, the app shows a modal and routes you to sign in
+- **Theme**
+  - Light/dark toggle in the header
+  - Theme preference is saved in `localStorage` and applied by toggling the `dark` class on `<html>`
 
-### `npm start`
+## How it works (high level)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### Routing
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+The app uses React Router:
 
-### `npm test`
+- `/` redirects to `/feed`
+- `/auth/*` routes are public-only
+- `/feed` is public
+- `/post` is protected by `RequireAuth`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Data flow (Redux)
 
-### `npm run build`
+1. **UI triggers an action** (e.g. load feed, sign in, create post).
+2. The app dispatches an async thunk from `src/actions/actions`.
+3. The thunk calls the API client (`src/api/`).
+4. Slices in `src/slices/` update Redux state via `extraReducers` (pending/fulfilled/rejected).
+5. Components re-render using `useSelector`.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Persistence (why you still see data after refresh)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+The store is configured with persistence (via `redux-persist`). Parts of the Redux state (like `auth` and `posts`) are saved to `localStorage` and rehydrated on app startup.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+If you change your encryption/persistence settings, old persisted data can become incompatible—clearing site storage fixes that.
 
-### `npm run eject`
+## Project structure (important parts)
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```
+src/
+  actions/           # async thunks (API calls)
+  api/               # API client (axios)
+  components/        # UI components (Header, Auth, Posts, etc.)
+  slices/            # feature reducers (AuthSlice, PostSlice)
+  store/             # store setup, selectors, constants
+  utils/             # persistence/encryption helpers
+  App.js             # router + page layout
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Run locally
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### 1) Install dependencies
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+```bash
+npm install --legacy-peer-deps
+```
 
-## Learn More
+### 2) Configure environment variables
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Create `.env` (or copy from `.env.example` if present) and set:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```bash
+REACT_APP_API_URL=http://localhost:5000/api
+REACT_APP_ENCRYPTION_KEY=your-strong-secret-key-at-least-32-chars
+```
 
-### Code Splitting
+### 3) Start the dev server
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+```bash
+npm start
+```
 
-### Analyzing the Bundle Size
+Then open `http://localhost:3000`.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## Build for production
 
-### Making a Progressive Web App
+```bash
+npm run build
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## Troubleshooting
 
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- **Blank page / `posts.slice is not a function`**
+  - Clear persisted storage in your browser (DevTools → Application → Storage → Clear site data) and reload.
+  - Make sure `.env` has `REACT_APP_ENCRYPTION_KEY` set (and don’t change it without clearing storage).

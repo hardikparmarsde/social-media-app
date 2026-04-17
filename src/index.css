@@ -1,6 +1,135 @@
-body {
-    background-color: white
-}
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  :root.dark {
+    color-scheme: dark;
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-slate-50 text-slate-900 antialiased;
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial,
+      "Apple Color Emoji", "Segoe UI Emoji";
+  }
+
+  .dark body {
+    @apply bg-slate-950 text-slate-50;
+  }
+
+  ::selection {
+    @apply bg-rose-200;
+  }
+
+  .dark ::selection {
+    @apply bg-rose-900/60;
+  }
+}
+
+@layer components {
+  .app-shell {
+    @apply min-h-screen flex flex-col;
+  }
+
+  .app-main {
+    @apply flex-1 w-full;
+  }
+
+  .app-container {
+    @apply mx-auto w-full max-w-6xl px-3 sm:px-6;
+  }
+
+  .app-bg {
+    @apply relative;
+  }
+
+  .app-bg::before {
+    content: "";
+    @apply pointer-events-none absolute inset-0 -z-10;
+    background:
+      radial-gradient(800px 500px at 20% 0%, rgba(244, 63, 94, 0.18), transparent 55%),
+      radial-gradient(900px 550px at 85% 10%, rgba(59, 130, 246, 0.12), transparent 60%),
+      radial-gradient(700px 500px at 50% 95%, rgba(16, 185, 129, 0.10), transparent 60%);
+  }
+
+  .dark .app-bg::before {
+    background:
+      radial-gradient(800px 500px at 20% 0%, rgba(244, 63, 94, 0.22), transparent 55%),
+      radial-gradient(900px 550px at 85% 10%, rgba(59, 130, 246, 0.16), transparent 60%),
+      radial-gradient(700px 500px at 50% 95%, rgba(16, 185, 129, 0.12), transparent 60%);
+  }
+
+  .card {
+    @apply rounded-2xl border border-slate-200/70 bg-white shadow-soft;
+  }
+
+  .dark .card {
+    @apply border-slate-800/70 bg-slate-900/60;
+  }
+
+  .card-hover {
+    @apply transition-shadow duration-200 hover:shadow-md;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition
+      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 focus-visible:ring-offset-2
+      disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .btn-primary {
+    @apply bg-rose-500 text-white hover:bg-rose-600;
+  }
+
+  .btn-ghost {
+    @apply bg-transparent text-slate-700 hover:bg-slate-100;
+  }
+
+  .btn-soft {
+    @apply bg-rose-50 text-rose-700 hover:bg-rose-100;
+  }
+
+  .dark .btn-ghost {
+    @apply text-slate-200 hover:bg-slate-800/60;
+  }
+
+  .dark .btn-soft {
+    @apply bg-rose-500/10 text-rose-200 hover:bg-rose-500/15;
+  }
+
+  .input {
+    @apply w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900
+      placeholder:text-slate-400 shadow-sm
+      focus:outline-none focus:ring-2 focus:ring-rose-500/60;
+  }
+
+  .dark .input {
+    @apply border-slate-800 bg-slate-950/40 text-slate-100 placeholder:text-slate-500;
+  }
+
+  .textarea {
+    @apply input min-h-[96px] resize-none;
+  }
+
+  .muted {
+    @apply text-slate-600;
+  }
+
+  .dark .muted {
+    @apply text-slate-400;
+  }
+
+  .break-inside-avoid {
+    break-inside: avoid;
+  }
+}

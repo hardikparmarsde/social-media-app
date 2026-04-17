@@ -1,28 +1,49 @@
 import axios from 'axios'; 
 
-const API = axios.create({ baseURL: 'https://social-media-api-ch27.onrender.com'});
+const API = axios.create({ baseURL: 'http://localhost:5000' });
 
 API.interceptors.request.use((req => {
 
-    if(localStorage.getItem('profile')) {        
-        req.headers = {
-            'authorization' : `Bearer ${JSON.parse(localStorage.getItem('profile')).token}`,
-            'content-type': 'multipart/form-data'
+    const storageToken = (() => {
+        try {
+            return JSON.parse(localStorage.getItem('profile') || 'null')?.token || null;
+        } catch {
+            return null;
         }
+    })();
+
+    const token = storageToken;
+    if (token) {
+        req.headers = {
+            ...(req.headers || {}),
+            authorization: `Bearer ${token}`,
+        };
     }
 
     return req;
 }))
 
-export const getPosts = () => API.get(`/posts/getPosts`);
+export const getPosts = (params) => API.get(`/posts/getPosts`, { params });
 
-export const createPost = (newPost) => API.post(`/posts/createPost`,newPost);
+export const createPost = (newPost) =>
+  API.post(`/posts/createPost`, newPost, {
+    headers: newPost instanceof FormData ? { 'Content-Type': 'multipart/form-data' } : undefined,
+  });
 
-export const updatePost = (postId, post) => API.patch(`/posts/updatePost/${postId}`, post);
+export const updatePost = (postId, post) =>
+  API.patch(`/posts/updatePost/${postId}`, post, {
+    headers: post instanceof FormData ? { 'Content-Type': 'multipart/form-data' } : undefined,
+  });
 
 export const deletePost = (postId) => API.delete(`/posts/deletePost/${postId}`);
 
-export const likePost = (postId) => API.patch(`/posts//likePost/${postId}`);
+export const likePost = (postId) => API.patch(`/posts/likePost/${postId}`);
+
+// New functionality (backend)
+export const getTrendingPosts = (params) => API.get(`/posts/trending`, { params });
+export const searchPosts = (params) => API.get(`/posts/search`, { params });
+export const addComment = (postId, payload) => API.post(`/posts/${postId}/comments`, payload);
+export const deleteComment = (postId, commentId) => API.delete(`/posts/${postId}/comments/${commentId}`);
 
 export const signIn = (formData) => API.post(`/user/signin`, formData);
 

@@ -1,52 +1,82 @@
-import React from 'react';
-import { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Navigate} from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { fetchPosts } from './actions/actions';
 import Header from './components/header';
 import Footer from './components/footer';
-import { BrowserRouter as Router,  Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import UploadPost from './components/Posts/Post/UploadPost';
 import Auth from './components/Auth/Auth';
 import PaginatedItems from './components/pagination';
+import RequireAuth from './components/routing/RequireAuth';
+import PublicOnly from './components/routing/PublicOnly';
 
 const App = () => {
-  const[currentId, setCurrentId] = useState('');
   const dispatch = useDispatch();
-  const posts = useSelector((state) => state.posts.posts);
-  const[user, setUser] = useState(JSON.parse(localStorage.getItem('profile')));
- 
-  const itemsPerPage = 6;
-  const [itemOffset, setItemOffset] = useState(0);
+  const { user } = useSelector((state) => state.auth);
+  
+  const [currentId, setCurrentId] = useState('');
 
+  // Fetch posts on component mount
   useEffect(() => {
-    setUser(JSON.parse(localStorage.getItem('profile')));
-  }, user)
+    dispatch(fetchPosts({ page: 1, limit: 6 }));
+  }, [dispatch]);
 
-  useEffect(() => {
-     dispatch(fetchPosts());
-  },[currentId])
-
-
-  const currentItems = useMemo(() => {
-    const endOffset = itemOffset + itemsPerPage;
-    return posts.slice(itemOffset, endOffset)
- }, [posts, itemOffset, itemsPerPage])
+  // Memoize callbacks to prevent unnecessary re-renders of child components
+  const handleSetCurrentId = useCallback((id) => {
+    setCurrentId(id);
+  }, []);
 
   return (
-    <div className="w-full">
+    <div className="app-shell app-bg">
       <Router>
-        <Header user={user} setUser={setUser} setItemOffset={setItemOffset}/> 
-        <Routes>
-            <Route path='/auth' exact element={ !user ? <Auth /> : <Navigate to='/feed'/>} />
-            <Route path='/' exact element={<Navigate to='/auth'/>}/>
-            <Route path='/feed' exact element={user ? <PaginatedItems setCurrentId={setCurrentId} items={posts} currentItems={currentItems} itemsPerPage={itemsPerPage} setItemOffset={setItemOffset} /> : <Navigate to='/auth'/>} />
-            <Route path='/post' exact element={user ? <UploadPost currentId={currentId} setCurrentId={setCurrentId} user={user} /> : <Navigate to="/auth"/>}/>              
-        </Routes>
-        <Footer/>
-      </Router>  
+        <Header user={user} setItemOffset={() => {}} />
+        <main className="app-main">
+          <div className="app-container py-6 sm:py-10">
+            <Routes>
+              <Route path="/" element={<Navigate to="/feed" replace />} />
+              <Route
+                path="/auth/login"
+                element={
+                  <PublicOnly>
+                    <Auth mode="login" />
+                  </PublicOnly>
+                }
+              />
+              <Route
+                path="/auth/signup"
+                element={
+                  <PublicOnly>
+                    <Auth mode="signup" />
+                  </PublicOnly>
+                }
+              />
+              <Route path="/auth" element={<Navigate to="/auth/login" replace />} />
+              <Route
+                path="/feed"
+                element={
+                  <PaginatedItems setCurrentId={handleSetCurrentId} />
+                }
+              />
+              <Route
+                path="/post"
+                element={
+                  <RequireAuth>
+                    <UploadPost
+                      currentId={currentId}
+                      setCurrentId={handleSetCurrentId}
+                      user={user}
+                    />
+                  </RequireAuth>
+                }
+              />
+            </Routes>
+          </div>
+        </main>
+        <Footer />
+      </Router>
     </div>
   );
-}
+};
 
 export default App;
