@@ -10,6 +10,7 @@ import Auth from './components/Auth/Auth';
 import PaginatedItems from './components/pagination';
 import RequireAuth from './components/routing/RequireAuth';
 import PublicOnly from './components/routing/PublicOnly';
+import GlobalLoader from './components/ui/GlobalLoader';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -30,6 +31,7 @@ const App = () => {
   return (
     <div className="app-shell app-bg">
       <Router>
+        <GlobalLoader />
         <Header user={user} setItemOffset={() => {}} />
         <main className="app-main">
           <div className="app-container py-6 sm:py-10">

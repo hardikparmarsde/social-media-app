@@ -17,12 +17,10 @@ const UploadPost = ({ currentId, setCurrentId }) => {
     );
 
     const [postData, setPostData] = useState({
-        tags: [],
         message: "",
         selectedFile: null,
         name: ""
     });
-    const [tagsText, setTagsText] = useState('');
     const [isDragging, setIsDragging] = useState(false);
     const [previewLoaded, setPreviewLoaded] = useState(false);
 
@@ -52,18 +50,15 @@ const UploadPost = ({ currentId, setCurrentId }) => {
         if (currentId && post) {
             // Keep existing image URL for preview; new uploads will replace it with a File
             setPostData({
-                tags: post.tags || [],
                 message: post.message || '',
                 selectedFile: post.selectedFile || null,
                 name: post.name || '',
             });
-            setTagsText((post.tags || []).join(', '));
         }
     }, [currentId, post]);
 
     const clear = useCallback(() => {
-        setPostData({ selectedFile: null, message: '', tags: [], name: '' });
-        setTagsText('');
+        setPostData({ selectedFile: null, message: '', name: '' });
         setCurrentId('');
     }, [setCurrentId]);
 
@@ -73,16 +68,10 @@ const UploadPost = ({ currentId, setCurrentId }) => {
             alert('Please add a message or image to your post');
             return;
         }
-        const tags = tagsText
-            .split(',')
-            .map((t) => t.trim())
-            .filter(Boolean)
-            .slice(0, 10);
 
         const formData = new FormData();
         formData.append('message', postData.message || '');
         formData.append('name', user?.result?.name || '');
-        formData.append('tags', JSON.stringify(tags));
 
         // Only append file if the user selected one (File). If editing and they don't,
         // backend will keep the existing URL.
@@ -98,7 +87,7 @@ const UploadPost = ({ currentId, setCurrentId }) => {
 
         clear();
         navigateTo('/feed');
-    }, [postData, tagsText, currentId, user, dispatch, navigateTo, clear]);
+    }, [postData, currentId, user, dispatch, navigateTo, clear]);
 
     const handleFileChange = useCallback((e) => {
         const file = e.target.files[0];
@@ -132,7 +121,8 @@ const UploadPost = ({ currentId, setCurrentId }) => {
     const handleClear = useCallback((e) => {
         e.preventDefault();
         clear();
-    }, [clear]);
+        navigateTo('/feed');
+    }, [clear, navigateTo]);
 
     return (
         <motion.div className="mx-auto w-full max-w-md" {...fadeUp}>
@@ -229,25 +219,12 @@ const UploadPost = ({ currentId, setCurrentId }) => {
                         {postData.message?.length || 0}/100
                     </div>
                 </div>
-                <div className="space-y-2">
-                    <label className="text-sm font-semibold text-slate-700 dark:text-slate-200">Tags</label>
-                    <input
-                        className="input"
-                        value={tagsText}
-                        onChange={(e) => setTagsText(`${e.target.value}`)}
-                        placeholder="e.g. travel, food, weekend"
-                    />
-                    <div className="text-xs text-slate-500 dark:text-slate-400">
-                        Optional. Up to 10 tags, separated by commas.
-                    </div>
-                </div>
-
                 <div className="flex w-full gap-2 pt-1">
                     <motion.button type="submit" className="btn btn-primary w-1/2 py-3" {...tap} disabled={postsLoading}>
                         {postsLoading ? 'Posting…' : (post ? 'Save' : 'Post')}
                     </motion.button>
                     <motion.button type="button" className="btn btn-ghost w-1/2 py-3" onClick={handleClear} {...tap} disabled={postsLoading}>
-                        Clear
+                        Cancel
                     </motion.button>
                 </div>               
             </form>

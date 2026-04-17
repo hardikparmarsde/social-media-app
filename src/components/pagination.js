@@ -13,7 +13,7 @@ const PaginatedItems = ({ setCurrentId }) => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const { loading, posts, currentPage, totalPages, totalItems } = useSelector((state) => state.posts);
-  const [mode, setMode] = useState('forYou'); // forYou | latest
+  const [mode, setMode] = useState('latest'); // forYou | latest
   const [query, setQuery] = useState('');
   const [authModalOpen, setAuthModalOpen] = useState(false);
 
@@ -23,7 +23,7 @@ const PaginatedItems = ({ setCurrentId }) => {
 
   useEffect(() => {
     if (query.trim()) return;
-    if (mode === 'forYou') dispatch(fetchTrendingPosts({ limit: 60, windowHours: 96 }));
+    if (mode === 'forYou') dispatch(fetchTrendingPosts({ limit: 30, windowHours: 72 }));
     else dispatch(fetchPosts({ page: 1, limit: PAGE_SIZE }));
   }, [dispatch, mode, query]);
 
@@ -80,7 +80,7 @@ const PaginatedItems = ({ setCurrentId }) => {
               className="input"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search posts…"
+              placeholder="Search by caption or username…"
               type="search"
             />
           </div>

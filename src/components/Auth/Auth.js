@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { logout, signIn, signUp } from "../../actions/actions";
+import { signIn, signUp } from "../../actions/actions";
 import { motion, useMotionVariants } from "../ui/motion";
 
 const Auth = ({ mode = 'login' }) => {
@@ -62,19 +62,12 @@ const Auth = ({ mode = 'login' }) => {
             return;
         }
 
-        const from = location.state?.from || '/feed';
+        const from = '/feed';
 
         if (isSignUp) {
             dispatch(signUp({ formData }))
                 .unwrap()
-                .then(async () => {
-                    // After sign up, force user through sign-in screen
-                    await dispatch(logout()).unwrap();
-                    navigateTo('/auth/login', {
-                        replace: true,
-                        state: { from, message: 'Account created. Please sign in.' },
-                    });
-                })
+                .then(() => navigateTo(from, { replace: true }))
                 .catch(() => {});
         } else {
             dispatch(signIn({ formData }))
@@ -82,7 +75,7 @@ const Auth = ({ mode = 'login' }) => {
                 .then(() => navigateTo(from, { replace: true }))
                 .catch(() => {});
         }
-    }, [isSignUp, formData, dispatch, navigateTo, location.state?.from]);
+    }, [isSignUp, formData, dispatch, navigateTo]);
 
     const handleEmail = useCallback((e) => {
         setFieldErrors((prev) => ({ ...prev, email: '' }));
