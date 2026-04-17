@@ -1,6 +1,8 @@
 import axios from 'axios'; 
 
-const API = axios.create({ baseURL: process.env.REACT_APP_API_URL  });
+// Prefer env override; otherwise use same-origin + CRA proxy in development.
+const baseURL = process.env.REACT_APP_API_URL || '';
+const API = axios.create({ baseURL });
 
 API.interceptors.request.use((req => {
 
