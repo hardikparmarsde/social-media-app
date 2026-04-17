@@ -234,7 +234,7 @@ const UploadPost = ({ currentId, setCurrentId }) => {
                     <input
                         className="input"
                         value={tagsText}
-                        onChange={(e) => setTagsText(`#${e.target.value}`)}
+                        onChange={(e) => setTagsText(`${e.target.value}`)}
                         placeholder="e.g. travel, food, weekend"
                     />
                     <div className="text-xs text-slate-500 dark:text-slate-400">
