@@ -283,6 +283,11 @@ const Post = ({ post, setCurrentId }) => {
                                     <div className="h-full w-full bg-gradient-to-br from-slate-200 via-slate-100 to-slate-200 dark:from-slate-800 dark:via-slate-900 dark:to-slate-800" />
                                 </div>
                             )}
+                            {console.log('[Post Image Debug]', {
+                                raw: post.selectedFile,
+                                resolved: resolveAssetUrl(post.selectedFile),
+                                baseURL: require('../../../api').API_BASE_URL,
+                            })}
                             <img
                                 className="max-h-[520px] w-full object-cover"
                                 src={resolveAssetUrl(post.selectedFile)}
