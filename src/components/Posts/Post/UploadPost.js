@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { createPost, updatePost } from "../../../actions/actions";
 import { resolveAssetUrl } from "../../../api";
 import { motion, useMotionVariants } from "../../ui/motion";
+import Spinner from "../../ui/Spinner";
 
 const UploadPost = ({ currentId, setCurrentId }) => {
     const { fadeUp, tap } = useMotionVariants();
@@ -220,8 +221,15 @@ const UploadPost = ({ currentId, setCurrentId }) => {
                     </div>
                 </div>
                 <div className="flex w-full gap-2 pt-1">
-                    <motion.button type="submit" className="btn btn-primary w-1/2 py-3" {...tap} disabled={postsLoading}>
-                        {postsLoading ? 'Posting…' : (post ? 'Save' : 'Post')}
+                    <motion.button
+                        type="submit"
+                        className="btn btn-primary w-1/2 py-3 inline-flex items-center justify-center gap-2"
+                        {...tap}
+                        disabled={postsLoading}
+                        aria-busy={postsLoading}
+                    >
+                        {postsLoading && <Spinner size="sm" />}
+                        {postsLoading ? (post ? 'Saving…' : 'Posting…') : (post ? 'Save' : 'Post')}
                     </motion.button>
                     <motion.button type="button" className="btn btn-ghost w-1/2 py-3" onClick={handleClear} {...tap} disabled={postsLoading}>
                         Cancel

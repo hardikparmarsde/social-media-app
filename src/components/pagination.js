@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import ReactPaginate from 'react-paginate';
 import Posts from './Posts/Posts';
+import PostSkeleton from './Posts/PostSkeleton';
 import { Link } from 'react-router-dom';
 import { motion, useMotionVariants } from './ui/motion';
 import { useDispatch, useSelector } from 'react-redux';
@@ -115,7 +116,11 @@ const PaginatedItems = ({ setCurrentId }) => {
         </div>
       </Link>
 
-      {posts.length === 0 ? (
+      {loading && posts.length === 0 ? (
+        /* Initial load — show skeleton grid so users don't see "No posts yet" flicker */
+        <PostSkeleton count={6} />
+      ) : !loading && posts.length === 0 ? (
+        /* Confirmed empty — real empty state */
         <div className="card p-6 sm:p-10 text-center">
           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-200">
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
@@ -133,13 +138,8 @@ const PaginatedItems = ({ setCurrentId }) => {
           </div>
         </div>
       ) : (
+        /* Have posts — show feed. GlobalLoader top-bar covers refetch state. */
         <div className="space-y-4">
-          {loading && (
-            <div className="card p-4">
-              <div className="h-4 w-32 animate-pulse rounded bg-slate-200 dark:bg-slate-800" />
-              <div className="mt-3 h-24 animate-pulse rounded-xl bg-slate-200 dark:bg-slate-800" />
-            </div>
-          )}
           <Posts setCurrentId={setCurrentId} posts={posts} />
         </div>
       )}

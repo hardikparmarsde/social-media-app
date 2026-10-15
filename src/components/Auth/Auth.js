@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { signIn, signUp } from "../../actions/actions";
 import { motion, useMotionVariants } from "../ui/motion";
+import Spinner from "../ui/Spinner";
 
 const Auth = ({ mode = 'login' }) => {
     const dispatch = useDispatch();
@@ -254,9 +255,11 @@ const Auth = ({ mode = 'login' }) => {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="btn btn-primary w-full py-3"
+                        aria-busy={loading}
+                        className="btn btn-primary w-full py-3 inline-flex items-center justify-center gap-2"
                     >
-                        {loading ? 'Processing...' : (isSignUp ? 'Sign Up' : 'Sign In')}
+                        {loading && <Spinner size="sm" />}
+                        {loading ? (isSignUp ? 'Creating account…' : 'Signing in…') : (isSignUp ? 'Sign Up' : 'Sign In')}
                     </button>
                     {isSignUp ? (
                         <Link to="/auth/login" className="btn btn-ghost w-full py-3 text-center">
