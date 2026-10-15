@@ -20,6 +20,12 @@ const Post = ({ post, setCurrentId }) => {
     const [imageOpen, setImageOpen] = useState(false);
     const [imageLoaded, setImageLoaded] = useState(false);
     const [modalImageLoaded, setModalImageLoaded] = useState(false);
+    // Delayed-visibility shimmer: only show the loader if the image hasn't
+    // loaded within 150ms. Cached images resolve faster than that → no flash.
+    const [showImageShimmer, setShowImageShimmer] = useState(false);
+    const [showModalShimmer, setShowModalShimmer] = useState(false);
+    const feedImgRef = useRef(null);
+    const modalImgRef = useRef(null);
     const [authModalOpen, setAuthModalOpen] = useState(false);
     const [authModalMessage, setAuthModalMessage] = useState('');
     const dispatch = useDispatch();
@@ -82,10 +88,33 @@ const Post = ({ post, setCurrentId }) => {
         }
     }, [dispatch, post._id, isLiking, authToken, requireAuth]);
 
+    // Reset load state when the post / its image changes. If the <img> element
+    // reports .complete synchronously (browser cache hit), skip the loader entirely.
     useEffect(() => {
-        setImageLoaded(false);
-        setModalImageLoaded(false);
+        const feedCached = !!(feedImgRef.current && feedImgRef.current.complete && feedImgRef.current.naturalWidth > 0);
+        setImageLoaded(feedCached);
+        setModalImageLoaded(false); // modal img only mounts on open
     }, [post?._id, post?.selectedFile]);
+
+    // Delay showing the feed shimmer by 150ms. Cached images finish before that.
+    useEffect(() => {
+        if (imageLoaded) {
+            setShowImageShimmer(false);
+            return;
+        }
+        const t = setTimeout(() => setShowImageShimmer(true), 150);
+        return () => clearTimeout(t);
+    }, [imageLoaded, post?._id, post?.selectedFile]);
+
+    // Same for modal.
+    useEffect(() => {
+        if (modalImageLoaded) {
+            setShowModalShimmer(false);
+            return;
+        }
+        const t = setTimeout(() => setShowModalShimmer(true), 150);
+        return () => clearTimeout(t);
+    }, [modalImageLoaded, imageOpen]);
 
     const toggleDrawer = useCallback(() => {
         setDrawer((prev) => !prev);
@@ -278,17 +307,19 @@ const Post = ({ post, setCurrentId }) => {
                         aria-label="Open image"
                     >
                         <div className="relative bg-slate-100 dark:bg-slate-800/60">
-                            {!imageLoaded && (
+                            {!imageLoaded && showImageShimmer && (
                                 <div className="absolute inset-0 animate-pulse">
                                     <div className="h-full w-full bg-gradient-to-br from-slate-200 via-slate-100 to-slate-200 dark:from-slate-800 dark:via-slate-900 dark:to-slate-800" />
                                 </div>
                             )}
-                            {console.log('[Post Image Debug]', {
-                                raw: post.selectedFile,
-                                resolved: resolveAssetUrl(post.selectedFile),
-                                baseURL: require('../../../api').API_BASE_URL,
-                            })}
                             <img
+                                ref={(el) => {
+                                    feedImgRef.current = el;
+                                    // Catch cache hits that fire before React attaches onLoad.
+                                    if (el && el.complete && el.naturalWidth > 0 && !imageLoaded) {
+                                        setImageLoaded(true);
+                                    }
+                                }}
                                 className="max-h-[520px] w-full object-cover"
                                 src={resolveAssetUrl(post.selectedFile)}
                                 alt="post"
@@ -635,10 +666,16 @@ const Post = ({ post, setCurrentId }) => {
                         transition={{ duration: 0.18, ease: 'easeOut' }}
                     >
                         <div className="relative">
-                            {!modalImageLoaded && (
+                            {!modalImageLoaded && showModalShimmer && (
                                 <div className="absolute inset-0 animate-pulse bg-gradient-to-br from-white/10 via-white/5 to-white/10" />
                             )}
                             <img
+                                ref={(el) => {
+                                    modalImgRef.current = el;
+                                    if (el && el.complete && el.naturalWidth > 0 && !modalImageLoaded) {
+                                        setModalImageLoaded(true);
+                                    }
+                                }}
                                 src={resolveAssetUrl(post.selectedFile)}
                                 alt="post"
                                 className="max-h-[85vh] w-full object-contain"
